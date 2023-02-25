@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("layouts/header.ejs") %>
+
+</head>
+
+<body>
+    <div class="container">
+        <div class="row mt-5" style="text-align: center;">
+            <div class="col-3"></div>
+            <div class="col-6">
+                <h1>Register</h1>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-3"></div>
+            <div class="col-6">
+                <form id="form-auth" action="/api/register" method="post">
+                    <div class="mb-3">
+                        <label for="exampleInputEmail1" class="form-label">Username</label>
+                        <input name="username" type="text" class="form-control" id="username"
+                            aria-describedby="emailHelp">
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleInputPassword1" class="form-label">Password</label>
+                        <input name="password" type="password" class="form-control" id="password">
+                    </div>
+
+                    <div style="text-align: center;">
+                        <button onclick="handleSubmit(event)" type="submit" class="btn btn-primary">Apply</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+
+    <%- include("layouts/b5script.ejs") %>
+
+        <script>
+            let form = document.querySelector('#form-auth');
+            let username = form.querySelector('#username');
+            let password = form.querySelector('#password');
+
+            let handleSubmit = async (event) => {
+                event.preventDefault();
+                axios({
+                    method: form.method,
+                    url: form.action,
+                    data: {
+                        username: username.value,
+                        password: password.value,
+                    }
+                }).then(result => {
+                    if(result.data.message) {
+                        window.location.replace(
+                            `http://${window.location.hostname}:${window.location.port}/auth/login`
+                        )
+                    }
+                }).catch(err => {
+                    console.log(err);
+                })
+            }
+
+        </script>
+
+</body>
+
+</html>
