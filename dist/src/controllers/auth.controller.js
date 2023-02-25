@@ -3,12 +3,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 class authController {
     constructor() {
         this.showLogin = async (req, res) => {
-            res.render('login');
+            res.render("login");
         };
         this.showRegister = async (req, res) => {
-            res.render('register');
+            res.render("register");
         };
         this.loginOverGoogle = async (req, res) => {
+            res.render('home');
         };
     }
 }

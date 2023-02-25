@@ -30,6 +30,11 @@ interface IUser {
         type: number;
         default: 2;
     };
+    google: {
+        id: {
+            type: string;
+        };
+    };
 }
 declare const User: import("mongoose").Model<IUser, {}, {}, {}, any>;
 export { User };
