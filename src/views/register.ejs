@@ -20,12 +20,18 @@
                 <form id="form-auth" action="/api/register" method="post">
                     <div class="mb-3">
                         <label for="exampleInputEmail1" class="form-label">Username</label>
-                        <input name="username" type="text" class="form-control" id="username"
+                        <input onchange="validateUsername()" name="username" type="text" class="form-control" id="username"
                             aria-describedby="emailHelp">
+                        <div class="invalid-feedback">
+                            Username is at least 6-20 words without special symbols
+                        </div>
                     </div>
                     <div class="mb-3">
                         <label for="exampleInputPassword1" class="form-label">Password</label>
-                        <input name="password" type="password" class="form-control" id="password">
+                        <input onchange="validatePassword()" name="password" type="password" class="form-control" id="password">
+                        <div class="invalid-feedback">
+                            Password includes at least: 8 words, 1 UPPERCASE, 1 lowercase, 1 special symbol (!@#$?%^&*-)
+                        </div>
                     </div>
 
                     <div style="text-align: center;">
@@ -56,7 +62,7 @@
                         password: password.value,
                     }
                 }).then(result => {
-                    if(result.data.message) {
+                    if (result.data.message) {
                         window.location.replace(
                             `http://${window.location.hostname}:${window.location.port}/auth/login`
                         )
@@ -64,6 +70,28 @@
                 }).catch(err => {
                     console.log(err);
                 })
+            }
+
+            let validateUsername = () => {
+                let username = form.querySelector('#username').value;
+                let regexp = new RegExp(/\w{6,20}$/)
+                let validate = regexp.test(username);
+                if (validate) {
+                    document.querySelector('#username').className = 'is-valid form-control';
+                } else {
+                    document.querySelector('#username').className = 'is-invalid form-control';
+                }
+            }
+
+            let validatePassword = () => {
+                let password = form.querySelector('#password').value;
+                let regexp = new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-1])(?=.*[!@#$%^?&*-])[a-zA-Z\d!@#$?%^&*-].{8,}$/);
+                let validate = regexp.test(password);
+                if (validate) {
+                    document.querySelector('#password').className = 'is-valid form-control';
+                } else {
+                    document.querySelector('#password').className = 'is-invalid form-control';
+                }
             }
 
         </script>
