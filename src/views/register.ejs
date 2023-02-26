@@ -20,15 +20,16 @@
                 <form id="form-auth" action="/api/register" method="post">
                     <div class="mb-3">
                         <label for="exampleInputEmail1" class="form-label">Username</label>
-                        <input onchange="validateUsername()" name="username" type="text" class="form-control" id="username"
-                            aria-describedby="emailHelp">
+                        <input onchange="validateUsername()" name="username" type="text" class="form-control"
+                            id="username" aria-describedby="emailHelp">
                         <div class="invalid-feedback">
                             Username is at least 6-20 words without special symbols
                         </div>
                     </div>
                     <div class="mb-3">
                         <label for="exampleInputPassword1" class="form-label">Password</label>
-                        <input onchange="validatePassword()" name="password" type="password" class="form-control" id="password">
+                        <input onchange="validatePassword()" name="password" type="password" class="form-control"
+                            id="password">
                         <div class="invalid-feedback">
                             Password includes at least: 8 words, 1 UPPERCASE, 1 lowercase, 1 special symbol (!@#$?%^&*-)
                         </div>
@@ -54,40 +55,71 @@
 
             let handleSubmit = async (event) => {
                 event.preventDefault();
-                axios({
-                    method: form.method,
-                    url: form.action,
-                    data: {
-                        username: username.value,
-                        password: password.value,
+
+                let resultValidateUsername = await checkUsername(username.value);
+                let resultValidatePassword = await checkUsername(password.value);
+
+                if (resultValidateUsername === 'is-valid' && resultValidatePassword === 'is-valid') {
+                    axios({
+                        method: form.method,
+                        url: form.action,
+                        data: {
+                            username: username.value,
+                            password: password.value,
+                        }
+                    }).then(result => {
+                        if (result.data.message) {
+                            window.location.replace(
+                                `http://${window.location.hostname}:${window.location.port}/auth/login`
+                            )
+                        }
+                    }).catch(err => {
+                        console.log(err);
+                    })
+                } else {
+                    validateUsername();
+                    validatePassword();
+                }
+
+            }
+
+            let checkUsername = (username) => {
+                return new Promise((resolve, reject) => {
+                    let regexp = new RegExp(/\w{6,20}$/);
+                    let validate = regexp.test(username);
+                    if (validate) {
+                        resolve('is-valid');
+                    } else {
+                        resolve('is-invalid');
                     }
-                }).then(result => {
-                    if (result.data.message) {
-                        window.location.replace(
-                            `http://${window.location.hostname}:${window.location.port}/auth/login`
-                        )
-                    }
-                }).catch(err => {
-                    console.log(err);
                 })
             }
 
-            let validateUsername = () => {
+            let checkPassword = (password) => {
+                return new Promise((resolve, reject) => {
+                    let regexp = new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-1])(?=.*[!@#$%^?&*-])[a-zA-Z\d!@#$?%^&*-].{8,}$/);
+                    let validate = regexp.test(password);
+                    if (validate) {
+                        resolve('is-valid');
+                    } else {
+                        resolve('is-invalid');
+                    }
+                })
+            }
+            let validateUsername = async () => {
                 let username = form.querySelector('#username').value;
-                let regexp = new RegExp(/\w{6,20}$/)
-                let validate = regexp.test(username);
-                if (validate) {
+                let result = await checkUsername(username);
+                if (result === 'is-valid') {
                     document.querySelector('#username').className = 'is-valid form-control';
                 } else {
                     document.querySelector('#username').className = 'is-invalid form-control';
                 }
             }
 
-            let validatePassword = () => {
+            let validatePassword = async () => {
                 let password = form.querySelector('#password').value;
-                let regexp = new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-1])(?=.*[!@#$%^?&*-])[a-zA-Z\d!@#$?%^&*-].{8,}$/);
-                let validate = regexp.test(password);
-                if (validate) {
+                let result = await checkPassword(password);
+                if (result === 'is-valid') {
                     document.querySelector('#password').className = 'is-valid form-control';
                 } else {
                     document.querySelector('#password').className = 'is-invalid form-control';
