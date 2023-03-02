@@ -1,8 +1,9 @@
 import homeController from "../controllers/home.controller";
 import express from "express";
+import authorize from "../middleware/authorize";
 
 const homeRouter = express.Router();
 
-homeRouter.get("/", homeController.showHome);
+homeRouter.get("/", authorize.user, homeController.showHome);
 
 export default homeRouter;

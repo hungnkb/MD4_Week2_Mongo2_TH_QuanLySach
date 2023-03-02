@@ -6,10 +6,12 @@ import { Book } from "../schemas/Book.model";
 
 class BookController {
   async showCreate(req: Request, res: Response) {
+
     res.render("createBook");
   }
 
   async createBook(req: Request, res: Response) {
+    
     let newBook = new Book(req.body);
     try {
       let doneCreateBook = newBook.save();
@@ -19,14 +21,11 @@ class BookController {
         console.log("Create book fail");
       }
     } catch {
-        console.log('Create book fail');
-        
+      console.log("Create book fail");
     }
   }
 
-  async showBook(req: Request, res: Response) {
-    
-  }
+  async showBook(req: Request, res: Response) {}
 }
 
 export default new BookController();

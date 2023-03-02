@@ -59,10 +59,9 @@
                     }
                 }).then(result => {
                     if(result.data.message) {
-                        console.log(result.data);
-                        // window.location.replace(
-                        //    window.location.origin
-                        // )
+                        window.location.replace(
+                           window.location.origin
+                        )
                     }
                 }).catch(error => {
                     console.log(error.data);
