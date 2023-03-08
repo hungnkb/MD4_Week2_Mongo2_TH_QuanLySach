@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("layouts/header.ejs") %>
+</head>
+
+<body onload="renderTableEmployee(event)">
+
+    <div class="container" style="box-shadow: rgba(17, 17, 26, 0.1) 0px 0px 16px; border-radius: 10px">
+        <h1>Employee</h1>
+        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#add-employee-modal"
+            onclick="setBranchModalEditEmployee(event)">Add</button>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Employee Code</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Age</th>
+                    <th scope="col">Salary</th>
+                    <th scope="col">Branch</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody id="table-employee" class="table-group-divider">
+               
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Add Employee Modal -->
+    <div class="modal fade" id="add-employee-modal" tabindex="-1" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Add Employee</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="/api/employee" method="post" id="form-add-employee">
+                        <div class="mb-3">
+                            <label for="" class="form-label">Employee Code</label>
+                            <input id="code" type="text" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label for="" class="form-label">Name</label>
+                            <input id="name" type="text" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label for="" class="form-label">Age</label>
+                            <input id="age" type="number" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label for="" class="form-label">Salary</label>
+                            <input id="salary" type="number" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label for="" class="form-label">Branch</label>
+                            <select id="select-branch-modal-edit-employee" class="form-select"
+                                aria-label="Default select example">
+                                <div id="select-branch-modal-edit-employee">
+
+                                </div>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button onclick="submitAddEmployee(event)" type="button" class="btn btn-primary">Save
+                        changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <%- include("layouts/cdn.ejs") %>
+</body>
+
+<script>
+
+    let renderTableEmployee = (event) => {
+        event.preventDefault()
+        axios({
+            method: 'get',
+            url: `${window.location.origin}/api/employee`
+        }).then(result => {
+            result.data.employee.forEach(e => {
+                document.querySelector('#table-employee').innerHTML += `
+                <tr>
+                <th scope="row">${e.code}</th>
+                <td colspan="2">${e.name}</td>
+                <td colspan="2">${e.age}</td>
+                <td colspan="2">${e.salary}</td>
+                <td>${e.branch}</td>
+                <td><button type="button" class="btn btn-primary">Edit</button> <button type="button" class="btn btn-danger">Delete</button></td>
+                </tr>
+                `
+            })
+        })
+
+    }
+
+    let submitAddEmployee = (event) => {
+        event.preventDefault();
+        let form = document.querySelector('#form-add-employee');
+        let code = form.code;
+        let name = form.name;
+        let age = form.age;
+        let salary = form.salary;
+        let branch = document.querySelector('#select-branch-modal-edit-employee');
+
+        axios({
+            method: form.method,
+            url: form.action,
+            data: {
+                code: code.value,
+                name: name.value,
+                age: age.value,
+                salary: salary.value,
+                branch: branch.value,
+            }
+        }).then(result => {
+            Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: result.data.message,
+                showConfirmButton: false,
+                timer: 1000
+            }).then(result => {
+                window.location.replace(
+                    `http://${window.location.hostname}:${window.location.port}/employee`
+                )
+            })
+
+        })
+    }
+
+    setBranchModalEditEmployee = (event) => {
+        event.preventDefault();
+        axios({
+            method: 'get',
+            url: `${window.location.origin}/api/branch`
+        }).then(result => {
+            result.data.forEach(branch => {
+                document.querySelector('#select-branch-modal-edit-employee').innerHTML += `
+                <option value="${branch._id}">${branch.nameBranch}</option>
+                `
+            })
+        })
+    }
+</script>
+
+</html>

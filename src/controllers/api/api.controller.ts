@@ -1,10 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 import bcrypt from "bcrypt";
-import { User } from "../schemas/User.model";
+import { User } from "../../schemas/User.schema";
 import passport from "passport";
 import jwt from "jsonwebtoken";
-import validateRegister from "../middleware/validateRegister";
-import qs from 'qs';
+import validateRegister from "../../middleware/validateRegister";
+import qs from "qs";
 
 class apiController {
   register = async (req: Request, res: Response): Promise<any> => {
@@ -15,7 +15,7 @@ class apiController {
       if (validateResult === "bothValid") {
         let isUsernameExist = await User.findOne({ username: username });
         if (isUsernameExist) {
-          res.status(400).json({message: 'Register fail'});
+          res.status(400).json({ message: "Register fail" });
         } else {
           const salt = await bcrypt.genSaltSync(10);
           password = await bcrypt.hashSync(password, salt);
@@ -56,11 +56,11 @@ class apiController {
     }
   };
 
-  logout  = async (req: Request, res: Response) => {
+  logout = async (req: Request, res: Response) => {
     let cookieObj = qs.parse(req.headers.cookie);
     let name = Object.keys(cookieObj)[0];
-    res.clearCookie(name).status(200).json({message: 'logout success'});
-  }
+    res.clearCookie(name).status(200).json({ message: "logout success" });
+  };
 }
 
 export default new apiController();

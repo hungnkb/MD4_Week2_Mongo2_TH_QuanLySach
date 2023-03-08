@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import mongoose from "mongoose";
-import { Book } from "../schemas/Book.model";
+import { Book } from "../schemas/Book.schema";
 
 // const BookModel = mongoose.model('Book', Book)
 

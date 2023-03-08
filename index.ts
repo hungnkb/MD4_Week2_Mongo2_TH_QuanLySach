@@ -1,17 +1,18 @@
 import bodyParser from 'body-parser';
 import express from 'express';
-import mongoose from 'mongoose';
 import route from './src/routers';
 import passport from 'passport';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
+import database from './src/configs/database';
+
 
 const app = express();
-const PORT = 3000;
+database.connect();
 
-mongoose.set('strictQuery', true);
-mongoose.connect('mongodb://127.0.0.1:27017/dbtest')
-  .then(() => console.log('DB Connected!'));
+dotenv.config();
+let PORT = process.env.PORT;
+
 
 app.set('view engine', 'ejs');
 app.set('views', 'src/views');

@@ -4,6 +4,7 @@ import authorize from "../middleware/authorize";
 
 const homeRouter = express.Router();
 
-homeRouter.get("/", authorize.user, homeController.showHome);
+// homeRouter.get("/", authorize.user, homeController.showHome);
+homeRouter.get("/", homeController.showHome);
 
 export default homeRouter;
